@@ -9,20 +9,20 @@
 
 <div class="contextual">
   <% if User.current.allowed_to?(:add_issues, @project, :global => true) && (@project.nil? || Issue.allowed_target_trackers(@project).any?) %>
-    <%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>
+    <%= link_to sprite_icon('add', l(:label_issue_new)), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>
   <% end %>
   <%= actions_dropdown do %>
     <% if @project %>
-      <%= link_to l(:field_summary), project_issues_report_path(@project), :class => 'icon icon-stats' %>
+      <%= link_to sprite_icon('summary', l(:field_summary)), project_issues_report_path(@project), :class => 'icon icon-stats' %>
     <% end %>
 
-    <% if User.current.allowed_to?(:import_issues, @project, :global => true) %>
-      <%= link_to l(:button_import), new_issues_import_path(:project_id => @project), :class => 'icon icon-import' %>
+    <% if User.current.allowed_to?(:import_issues, @project, :global => true) && User.current.allowed_to?(:add_issues, @project, :global => true) %>
+      <%= link_to sprite_icon('import', l(:button_import)), new_issues_import_path(:project_id => @project), :class => 'icon icon-import' %>
     <% end %>
 
-    <%= link_to_if_authorized l(:label_settings),
-              {:controller => 'projects', :action => 'settings', :id => @project, :tab => 'issues'},
-              :class => 'icon icon-settings' if User.current.allowed_to?(:manage_categories, @project) %>
+    <%= link_to_if_authorized sprite_icon('settings', l(:label_settings)),
+                              {:controller => 'projects', :action => 'settings', :id => @project, :tab => 'issues'},
+                              :class => 'icon icon-settings' if User.current.allowed_to?(:edit_project, @project) %>
   <% end %>
 
   <%# issues_tree patch %>
@@ -32,6 +32,7 @@
 
 <h2><%= @query.new_record? ? l(:label_issue_plural) : @query.name %></h2>
 <% html_title(@query.new_record? ? l(:label_issue_plural) : @query.name) %>
+<%= @query.persisted? && @query.description.present? ? content_tag('p', @query.description, class: 'subtitle') : '' %>
 
 <%= form_tag({controller: :issues_trees,
               action: :tree_index,

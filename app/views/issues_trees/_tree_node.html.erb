@@ -8,7 +8,7 @@
   <% query.inline_columns.reject { |c| %i(id issue_id).include?(c.name) }.each do |column| %>
     <%= content_tag('td', column_content(column, issue), :class => column.css_classes) %>
   <% end %>
-  <td class="buttons"><%= link_to_context_menu %></td>
+  <td class="buttons hide-when-print"><%= link_to_context_menu %></td>
 </tr>
 <% query.block_columns.each do |column|
   if (text = column_content(column, issue)) && text.present? -%>
@@ -16,7 +16,7 @@
         data-tt-id="<%= issue.id %>"
         data-tt-branch="false"
         data-tt-parent-id="<%= issue.parent_id %>">
-      <td colspan="<%= query.inline_columns.size + 1 %>" class="<%= column.css_classes %>">
+      <td colspan="<%= query.inline_columns.size + 2 %>" class="<%= column.css_classes %> block_column">
         <% if query.block_columns.count > 1 %>
           <span><%= column.caption %></span>
         <% end %>
